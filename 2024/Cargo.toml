@@ -3,8 +3,6 @@ name = "aoc_2024"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
-
 [[bin]]
 name = "01"
 path = "src/bin/01.rs"
