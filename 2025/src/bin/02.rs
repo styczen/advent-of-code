@@ -36,6 +36,31 @@ impl Range {
         }
         return repetitions;
     }
+
+    fn get_n_repetitions(&self) -> Vec<u64> {
+        let mut repetitions = Vec::new();
+        'outer: for i in self.low..=self.high {
+            let i_s = i.to_string();
+            let l = i_s.len();
+            for n in 2..=l {
+                if l % n != 0 {
+                    continue;
+                }
+                let chunk_size = l / n;
+                let chunks: Vec<&str> = i_s
+                    .as_bytes()
+                    .chunks(chunk_size)
+                    .map(|c| std::str::from_utf8(c).unwrap())
+                    .collect();
+                let all_equal = chunks.windows(2).all(|w| w[0] == w[1]);
+                if all_equal {
+                    repetitions.push(i);
+                    continue 'outer;
+                }
+            }
+        }
+        return repetitions;
+    }
 }
 
 fn main() {
@@ -46,4 +71,10 @@ fn main() {
         .flat_map(|r| r.get_repetitions())
         .fold(0, |acc, x| acc + x);
     println!("Day 02 (part 1): {}", s);
+    let s = raw_data
+        .split(",")
+        .map(|p| p.parse::<Range>().unwrap())
+        .flat_map(|r| r.get_n_repetitions())
+        .fold(0, |acc, x| acc + x);
+    println!("Day 02 (part 2): {}", s);
 }
